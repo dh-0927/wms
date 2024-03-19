@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dh.wms.mapper.MessageMapper">
+
+
+    <insert id="save">
+        insert into message (id, goods_id, outbound_time, content, read_status)
+        values (#{id}, #{goodsId}, #{outboundTime}, #{content}, #{readStatus})
+    </insert>
+
+    <update id="updateStatus">
+        update message
+        set read_status = 1
+        where id = #{id}
+    </update>
+
+    <select id="getById" resultType="com.dh.wms.entity.Message">
+        select *
+        from message
+        where id = #{id}
+    </select>
+
+    <select id="queryByDateTime" resultType="com.dh.wms.entity.Message">
+        select id, goods_id, outbound_time, content, read_status
+        from message
+        <where>
+            <if test="start != null">
+                and outbound_time >= #{start}
+            </if>
+            <if test="end != null">
+                and outbound_time <![CDATA[<=]]> #{end}
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dh.wms.mapper.LedgerMapper">
+
+    <insert id="save">
+        insert into ledger (id, operator, goods_id, type, quantity, store_id, create_time, update_time)
+        values (#{id}, #{operator}, #{goodsId}, #{type}, #{quantity}, #{storeId}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="queryByGoodsIdAndStoreIdAndType" resultType="java.lang.Integer">
+        select sum(quantity)
+        from ledger
+        <where>
+            <if test="goodsId != null">
+                and goods_id = #{goodsId}
+            </if>
+            <if test="storeId != null">
+                and store_id = #{storeId}
+            </if>
+        </where>
+        and type = #{type}
+    </select>
+
+    <select id="queryByExample" resultType="com.dh.wms.entity.Ledger">
+        select id,
+               operator,
+               goods_id,
+               type,
+               quantity,
+               store_id,
+               create_time,
+               update_time
+        from ledger
+        where goods_id = (select id from goods where name = #{name})
+          and type = #{type}
+          and create_time > #{time}
+        order by create_time
+    </select>
+
+</mapper>
